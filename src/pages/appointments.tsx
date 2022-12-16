@@ -2,21 +2,33 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentForm from 'components/AppointmentForm';
 import AppointmentList from 'components/AppointmentList';
+// import { Appointment, Patient, Practitioner } from '@prisma/client';
 import Section from 'components/Section';
 import AllTasks from 'components/AllTasks';
 import { appointmentsSelectors, getAppointments } from 'store/appointments';
+import { patientsSelectors, getPatients } from 'store/patients';
+import { practitionersSelectors, getPractitioners } from 'store/practitioners';
 
 const AppointmentsPage = () => {
   const dispatch = useDispatch();
-  const appointments = useSelector((state) =>
-    appointmentsSelectors.selectAll(state.appointments),
+  const appointments = useSelector(({ appointments }) =>
+    appointmentsSelectors.selectAll(appointments),
+  );
+  const practitioners = useSelector(({ practitioners }) =>
+    practitionersSelectors.selectAll(practitioners),
+  );
+
+  const patients = useSelector(({ patients }) =>
+    patientsSelectors.selectAll(patients),
   );
 
   useEffect(() => {
     dispatch(getAppointments());
+    dispatch(getPatients());
+    dispatch(getPractitioners());
   }, []);
 
-  console.log('appointments', appointments);
+  console.log(appointments, practitioners, patients);
 
   return (
     <div className="appointment page">
