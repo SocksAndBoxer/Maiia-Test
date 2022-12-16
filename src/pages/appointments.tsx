@@ -1,9 +1,23 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import AppointmentForm from 'components/AppointmentForm';
 import AppointmentList from 'components/AppointmentList';
 import Section from 'components/Section';
 import AllTasks from 'components/AllTasks';
+import { appointmentsSelectors, getAppointments } from 'store/appointments';
 
 const AppointmentsPage = () => {
+  const dispatch = useDispatch();
+  const appointments = useSelector((state) =>
+    appointmentsSelectors.selectAll(state.appointments),
+  );
+
+  useEffect(() => {
+    dispatch(getAppointments());
+  }, []);
+
+  console.log('appointments', appointments);
+
   return (
     <div className="appointment page">
       <h1>Appointments</h1>
