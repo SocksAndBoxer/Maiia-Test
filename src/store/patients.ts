@@ -3,6 +3,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
+  SerializedError,
 } from '@reduxjs/toolkit';
 import { parseIds } from 'store/utils';
 import { SERVER_API_ENDPOINT } from './constants';
@@ -21,7 +22,10 @@ export const patientsSelectors = patientsAdapter.getSelectors();
 
 const patientsSlice = createSlice({
   name: 'patients',
-  initialState: patientsAdapter.getInitialState({
+  initialState: patientsAdapter.getInitialState<{
+    loading: boolean;
+    error: null | SerializedError;
+  }>({
     loading: false,
     error: null,
   }),

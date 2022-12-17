@@ -1,25 +1,32 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import AppointmentForm from 'components/AppointmentForm';
-import AppointmentList from 'components/AppointmentList';
-// import { Appointment, Patient, Practitioner } from '@prisma/client';
+import { useEffect, useState } from 'react';
+import AppointmentForm from 'components/AppointmentForm/AppointmentForm';
+import AppointmentList from 'components/AppointmentList/AppointmentList';
+import { Appointment, Patient, Practitioner } from '@prisma/client';
+import { AppointmentDetailed } from 'types/appointment';
 import Section from 'components/Section';
 import AllTasks from 'components/AllTasks';
 import { appointmentsSelectors, getAppointments } from 'store/appointments';
 import { patientsSelectors, getPatients } from 'store/patients';
 import { practitionersSelectors, getPractitioners } from 'store/practitioners';
+import { useAppSelector, useAppDispatch } from 'utils/hook';
 
 const AppointmentsPage = () => {
-  const dispatch = useDispatch();
-  const appointments = useSelector(({ appointments }) =>
+  const [appointmentsDetailed, setAppointmentsDetailed] = useState<
+    AppointmentDetailed[]
+  >([]);
+  const dispatch = useAppDispatch();
+  const appointments: Appointment[] = useAppSelector(({ appointments }) =>
     appointmentsSelectors.selectAll(appointments),
   );
-  const practitioners = useSelector(({ practitioners }) =>
+  const practitioners: Practitioner[] = useAppSelector(({ practitioners }) =>
     practitionersSelectors.selectAll(practitioners),
   );
-
-  const patients = useSelector(({ patients }) =>
+  const patients: Patient[] = useAppSelector(({ patients }) =>
     patientsSelectors.selectAll(patients),
+  );
+  const isLoading = useAppSelector(
+    ({ appointments, practitioners, patients }) =>
+      appointments.loading || practitioners.loading || patients.loading,
   );
 
   useEffect(() => {
@@ -28,7 +35,29 @@ const AppointmentsPage = () => {
     dispatch(getPractitioners());
   }, []);
 
-  console.log(appointments, practitioners, patients);
+  useEffect(() => {
+    if (!isLoading) {
+      const updatedAppointments = appointments.map(
+        (appointment: Appointment) => {
+          const { patientId, practitionerId } = appointment;
+
+          return {
+            ...appointment,
+            patient: patients.find((patient) => patient.id === patientId),
+            practitioner: practitioners.find(
+              (practitioner) => practitioner.id === practitionerId,
+            ),
+          };
+        },
+      );
+
+      setAppointmentsDetailed(updatedAppointments);
+    }
+  }, [isLoading, appointments, practitioners, patients]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="appointment page">
@@ -78,7 +107,7 @@ const AppointmentsPage = () => {
           title="Appointment List"
           className="appointment__list"
         >
-          <AppointmentList />
+          <AppointmentList items={appointmentsDetailed} />
         </Section>
       </div>
     </div>

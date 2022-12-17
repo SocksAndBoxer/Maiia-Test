@@ -1,0 +1,8 @@
+.AppointmentList {
+  display: flex;
+  flex-direction: column;
+
+  &__item {
+    display: flex;
+  }
+}

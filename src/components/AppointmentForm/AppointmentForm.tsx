@@ -1,8 +1,9 @@
-import EditorLink from './EditorLink';
+import EditorLink from '../EditorLink';
+import style from './AppointmentForm.module.scss';
 
 const AppointmentForm = () => {
   return (
-    <div>
+    <div className={style.AppointmentForm}>
       Edit{' '}
       <EditorLink path="src/components/AppointmentForm.tsx">
         "src/components/AppointmentForm.tsx"

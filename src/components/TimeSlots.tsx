@@ -1,11 +1,16 @@
 import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { Timeslot } from '@prisma/client';
 import { formatDateRange } from 'utils/date';
 
 const getTimeSlotDatacy = (id: string) => `timeslot-${id}`;
 
-const TimeSlots = (props) => {
+type Props = {
+  items: Timeslot[];
+};
+
+const TimeSlots: React.FC<Props> = (props) => {
   const { items } = props;
 
   return (
@@ -13,13 +18,15 @@ const TimeSlots = (props) => {
       {items.map((item) => (
         <Card
           key={item.id}
-          datacy={getTimeSlotDatacy(item.id)}
+          datacy={getTimeSlotDatacy(item.id.toString())}
           className="timeSlot__item btn"
         >
           <CardHeader
             avatar={<CalendarTodayIcon />}
             title={
-              <Typography datacy={`${getTimeSlotDatacy(item.id)}-range`}>
+              <Typography
+                datacy={`${getTimeSlotDatacy(item.id.toString())}-range`}
+              >
                 {formatDateRange({
                   from: new Date(item.startDate),
                   to: new Date(item.endDate),

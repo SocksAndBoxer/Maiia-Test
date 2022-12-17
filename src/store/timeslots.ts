@@ -3,6 +3,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
+  SerializedError,
 } from '@reduxjs/toolkit';
 import { parseIds } from 'store/utils';
 import { SERVER_API_ENDPOINT } from './constants';
@@ -20,9 +21,12 @@ const timeslotsAdapter = createEntityAdapter<Timeslot>({
 
 export const timeslotsSelectors = timeslotsAdapter.getSelectors();
 
-const timeslotsSlice = createSlice({
+const timeslotsSlice: any = createSlice({
   name: 'timeslots',
-  initialState: timeslotsAdapter.getInitialState({
+  initialState: timeslotsAdapter.getInitialState<{
+    loading: boolean;
+    error: null | SerializedError;
+  }>({
     loading: false,
     error: null,
   }),

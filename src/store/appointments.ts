@@ -3,6 +3,7 @@ import {
   createAsyncThunk,
   createSlice,
   createEntityAdapter,
+  SerializedError,
 } from '@reduxjs/toolkit';
 import { SERVER_API_ENDPOINT } from './constants';
 import { parseIds } from './utils';
@@ -34,7 +35,10 @@ export const appointmentsSelectors = appointmentsAdapter.getSelectors();
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
-  initialState: appointmentsAdapter.getInitialState({
+  initialState: appointmentsAdapter.getInitialState<{
+    loading: boolean;
+    error: null | SerializedError;
+  }>({
     loading: false,
     error: null,
   }),

@@ -26,7 +26,7 @@ const TaskList = (props: Props) => {
     onComplete,
     expected = props.tasks.length,
   } = props;
-  const [localForm, setLocalForm] = useState({});
+  const [localForm, setLocalForm] = useState<any>({});
 
   useEffect(() => {
     const existingLocalForm = localStorage.getItem(name);
@@ -47,10 +47,10 @@ const TaskList = (props: Props) => {
       .length;
   }, [localForm]);
 
-  const isAchievedAllTasks = useMemo(() => numberOfAchievedTasks >= expected, [
-    numberOfAchievedTasks,
-    expected,
-  ]);
+  const isAchievedAllTasks = useMemo(
+    () => numberOfAchievedTasks >= expected,
+    [numberOfAchievedTasks, expected],
+  );
 
   useEffect(() => {
     onComplete?.(isAchievedAllTasks);
@@ -79,7 +79,7 @@ const TaskList = (props: Props) => {
                   name={htmlFor}
                   checked={currentValue}
                   onChange={() => {
-                    setLocalForm((prevState) => ({
+                    setLocalForm((prevState: any) => ({
                       ...prevState,
                       [htmlFor]: !currentValue,
                     }));

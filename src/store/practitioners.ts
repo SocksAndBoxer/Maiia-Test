@@ -3,6 +3,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
+  SerializedError,
 } from '@reduxjs/toolkit';
 import { parseIds } from 'store/utils';
 import { SERVER_API_ENDPOINT } from './constants';
@@ -24,7 +25,10 @@ export const practitionersSelectors = practitionersAdapter.getSelectors();
 
 const practitionersSlice = createSlice({
   name: 'practitioners',
-  initialState: practitionersAdapter.getInitialState({
+  initialState: practitionersAdapter.getInitialState<{
+    loading: boolean;
+    error: null | SerializedError;
+  }>({
     loading: false,
     error: null,
   }),
