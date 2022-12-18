@@ -1,43 +1,71 @@
 import { useEffect, useState } from 'react';
 import AppointmentForm from 'components/AppointmentForm/AppointmentForm';
 import AppointmentList from 'components/AppointmentList/AppointmentList';
-import { Appointment, Patient, Practitioner } from '@prisma/client';
+import {
+  Availability,
+  Patient,
+  Practitioner,
+  Appointment,
+} from '@prisma/client';
 import { AppointmentDetailed } from 'types/appointment';
 import Section from 'components/Section';
 import AllTasks from 'components/AllTasks';
 import { appointmentsSelectors, getAppointments } from 'store/appointments';
 import { patientsSelectors, getPatients } from 'store/patients';
 import { practitionersSelectors, getPractitioners } from 'store/practitioners';
+import {
+  availabilitiesSelectors,
+  getAvailabilities,
+} from 'store/availabilities';
 import { useAppSelector } from 'utils/hook';
 import { useDispatch } from 'react-redux';
+import Loader from 'Loader/Loader';
+
+interface AppointmentData {
+  appointments: Appointment[];
+  availabilities: Availability[];
+  practitioners: Practitioner[];
+  patients: Patient[];
+  isLoading: boolean;
+}
 
 const AppointmentsPage = () => {
   const [appointmentsDetailed, setAppointmentsDetailed] = useState<
     AppointmentDetailed[]
   >([]);
   const dispatch = useDispatch();
-  const appointments: Appointment[] = useAppSelector(({ appointments }) =>
-    appointmentsSelectors.selectAll(appointments),
-  );
-  const practitioners: Practitioner[] = useAppSelector(({ practitioners }) =>
-    practitionersSelectors.selectAll(practitioners),
-  );
-  const patients: Patient[] = useAppSelector(({ patients }) =>
-    patientsSelectors.selectAll(patients),
-  );
-  const isLoading = useAppSelector(
-    ({ appointments, practitioners, patients }) =>
-      appointments.loading || practitioners.loading || patients.loading,
+  const {
+    appointments,
+    patients,
+    practitioners,
+    availabilities,
+    isLoading,
+  }: AppointmentData = useAppSelector(
+    ({ appointments, patients, practitioners, availabilities }) => {
+      return {
+        appointments: appointmentsSelectors.selectAll(appointments),
+        practitioners: practitionersSelectors.selectAll(practitioners),
+        availabilities: availabilitiesSelectors.selectAll(availabilities),
+        patients: patientsSelectors.selectAll(patients),
+        isLoading:
+          appointments.loading ||
+          practitioners.loading ||
+          patients.loading ||
+          availabilities.loading,
+      };
+    },
   );
 
   useEffect(() => {
     dispatch(getAppointments());
     dispatch(getPatients());
     dispatch(getPractitioners());
+    dispatch(getAvailabilities());
   }, []);
 
   useEffect(() => {
     if (!isLoading) {
+      // Add patient's and practitioner's details to the appointment object
       const updatedAppointments = appointments.map(
         (appointment: Appointment) => {
           const { patientId, practitionerId } = appointment;
@@ -57,7 +85,7 @@ const AppointmentsPage = () => {
   }, [isLoading, appointments, practitioners, patients]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (
@@ -101,7 +129,11 @@ const AppointmentsPage = () => {
           title="Appointment Form"
           className="appointment__form"
         >
-          <AppointmentForm />
+          <AppointmentForm
+            practitioners={practitioners}
+            patients={patients}
+            availabilities={availabilities}
+          />
         </Section>
         <Section
           name="appointment-list"

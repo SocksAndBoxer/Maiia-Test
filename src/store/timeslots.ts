@@ -21,7 +21,7 @@ const timeslotsAdapter = createEntityAdapter<Timeslot>({
 
 export const timeslotsSelectors = timeslotsAdapter.getSelectors();
 
-const timeslotsSlice: any = createSlice({
+const timeslotsSlice = createSlice({
   name: 'timeslots',
   initialState: timeslotsAdapter.getInitialState<{
     loading: boolean;

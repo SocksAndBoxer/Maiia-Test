@@ -3,13 +3,15 @@ import EditorLink from 'components/EditorLink';
 import TimeSlots from 'components/TimeSlots';
 import Section from 'components/Section';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getTimeSlots, timeslotsSelectors } from 'store/timeslots';
+import { useAppSelector } from 'utils/hook';
+import { Timeslot } from '@prisma/client';
 
 const TimeSlotPage = () => {
   const dispatch = useDispatch();
-  const timeslots = useSelector((state) =>
-    timeslotsSelectors.selectAll(state.timeslots),
+  const timeslots: Timeslot[] = useAppSelector(({ timeslots }) =>
+    timeslotsSelectors.selectAll(timeslots),
   );
 
   useEffect(() => {
