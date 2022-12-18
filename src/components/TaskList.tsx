@@ -17,6 +17,8 @@ type Props = {
   onComplete?: (value: boolean) => void;
 };
 
+type LocalForm = { [key: string]: boolean };
+
 const TaskList = (props: Props) => {
   const {
     tasks,
@@ -26,7 +28,7 @@ const TaskList = (props: Props) => {
     onComplete,
     expected = props.tasks.length,
   } = props;
-  const [localForm, setLocalForm] = useState<any>({});
+  const [localForm, setLocalForm] = useState<LocalForm>({});
 
   useEffect(() => {
     const existingLocalForm = localStorage.getItem(name);
@@ -79,7 +81,7 @@ const TaskList = (props: Props) => {
                   name={htmlFor}
                   checked={currentValue}
                   onChange={() => {
-                    setLocalForm((prevState: any) => ({
+                    setLocalForm((prevState: LocalForm) => ({
                       ...prevState,
                       [htmlFor]: !currentValue,
                     }));

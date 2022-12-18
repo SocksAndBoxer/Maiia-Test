@@ -8,13 +8,14 @@ import AllTasks from 'components/AllTasks';
 import { appointmentsSelectors, getAppointments } from 'store/appointments';
 import { patientsSelectors, getPatients } from 'store/patients';
 import { practitionersSelectors, getPractitioners } from 'store/practitioners';
-import { useAppSelector, useAppDispatch } from 'utils/hook';
+import { useAppSelector } from 'utils/hook';
+import { useDispatch } from 'react-redux';
 
 const AppointmentsPage = () => {
   const [appointmentsDetailed, setAppointmentsDetailed] = useState<
     AppointmentDetailed[]
   >([]);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const appointments: Appointment[] = useAppSelector(({ appointments }) =>
     appointmentsSelectors.selectAll(appointments),
   );
