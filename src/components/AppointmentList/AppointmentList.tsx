@@ -8,7 +8,6 @@ type Props = {
 };
 
 const AppointmentList: React.FC<Props> = ({ items }) => {
-  console.log(items);
   return (
     <div className={style.AppointmentList}>
       {items.map((item) => {

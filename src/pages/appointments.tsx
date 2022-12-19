@@ -13,17 +13,14 @@ import AllTasks from 'components/AllTasks';
 import { appointmentsSelectors, getAppointments } from 'store/appointments';
 import { patientsSelectors, getPatients } from 'store/patients';
 import { practitionersSelectors, getPractitioners } from 'store/practitioners';
-import {
-  availabilitiesSelectors,
-  getAvailabilities,
-} from 'store/availabilities';
 import { useAppSelector } from 'utils/hook';
 import { useDispatch } from 'react-redux';
 import Loader from 'Loader/Loader';
+import { getTimeSlots, timeslotsSelectors } from 'store/timeslots';
 
 interface AppointmentData {
   appointments: Appointment[];
-  availabilities: Availability[];
+  timeslots: Availability[];
   practitioners: Practitioner[];
   patients: Patient[];
   isLoading: boolean;
@@ -38,20 +35,20 @@ const AppointmentsPage = () => {
     appointments,
     patients,
     practitioners,
-    availabilities,
+    timeslots,
     isLoading,
   }: AppointmentData = useAppSelector(
-    ({ appointments, patients, practitioners, availabilities }) => {
+    ({ appointments, patients, practitioners, timeslots }) => {
       return {
         appointments: appointmentsSelectors.selectAll(appointments),
         practitioners: practitionersSelectors.selectAll(practitioners),
-        availabilities: availabilitiesSelectors.selectAll(availabilities),
+        timeslots: timeslotsSelectors.selectAll(timeslots),
         patients: patientsSelectors.selectAll(patients),
         isLoading:
           appointments.loading ||
           practitioners.loading ||
           patients.loading ||
-          availabilities.loading,
+          timeslots.loading,
       };
     },
   );
@@ -60,7 +57,7 @@ const AppointmentsPage = () => {
     dispatch(getAppointments());
     dispatch(getPatients());
     dispatch(getPractitioners());
-    dispatch(getAvailabilities());
+    dispatch(getTimeSlots());
   }, []);
 
   useEffect(() => {
@@ -132,7 +129,7 @@ const AppointmentsPage = () => {
           <AppointmentForm
             practitioners={practitioners}
             patients={patients}
-            availabilities={availabilities}
+            timeslots={timeslots}
           />
         </Section>
         <Section
